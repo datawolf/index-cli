@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+source $(dirname $0)/version
+
+cd $(dirname $0)/../package
+
+TAG=${TAG:-${VERSION}}
+REPO=${REPO:-rancher}
+
+cp ../bin/index-cli .
+docker build -t ${REPO}/index-cli:${TAG} .
+
+echo Built ${REPO}/index-cli:${TAG}
