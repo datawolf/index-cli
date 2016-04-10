@@ -4,3 +4,6 @@ import:
 
 - package: github.com/codegangsta/cli
   version: 71f57d300dd6a780ac1856c005c4b518cfd498ec
+
+- package: github.com/google/go-querystring/query
+  version: 9235644dd9e52eeae6fa48efd539fdc351a0af53
