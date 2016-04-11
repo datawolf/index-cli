@@ -58,6 +58,18 @@ func main() {
 			HideHelp: true,
 			Action:   action.Logout,
 		},
+		{
+			Name:     "search",
+			Usage:    "search rnd-dockerhub for images",
+			HideHelp: true,
+			Action:   action.Search,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "stars, s",
+					Usage: "Only displays with at least x stars",
+				},
+			},
+		},
 	}
 
 	exit(app.Run(os.Args))

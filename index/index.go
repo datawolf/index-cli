@@ -38,6 +38,7 @@ type Client struct {
 	// Servcie used for talking to different parts of the rnd-dockerhub API
 	Repositories  *RepositoriesService
 	Organizations *OrganizationsService
+	Search        *SearchService
 }
 
 // addOptions adds the parameters in opt as URL query  parameters to s.
@@ -75,6 +76,7 @@ func NewClient(httpClient *http.Client) *Client {
 
 	c.Repositories = &RepositoriesService{client: c}
 	c.Organizations = &OrganizationsService{client: c}
+	c.Search = &SearchService{client: c}
 
 	return c
 }
@@ -166,4 +168,53 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 	}
 
 	return response, err
+}
+
+// BasicAuthTransport is an http.RoundTripper that authenticates all requests
+// using HTTP Basic Authentication with the provided username and password.
+type BasicAuthTransport struct {
+	Username string
+	Password string
+
+	// Transport is the underlying HTTP transport to use when making requests.
+	//It will default to http.DefaultTransport if nil.
+	Transport http.RoundTripper
+}
+
+// RoundTrip implements the RoundTripper interface.
+func (t *BasicAuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	req = cloneRequest(req)
+	req.SetBasicAuth(t.Username, t.Password)
+
+	return t.transport().RoundTrip(req)
+}
+
+// Client returns an *http.Client that makes request that are authenticated
+// using HTTP Basic Authentication
+func (t *BasicAuthTransport) Client() *http.Client {
+	return &http.Client{Transport: t}
+}
+
+func (t *BasicAuthTransport) transport() http.RoundTripper {
+	if t.Transport != nil {
+		return t.Transport
+	}
+
+	return http.DefaultTransport
+}
+
+// cloneRequest returns a clone of the provided *http.Request. The clone is a
+// shadow copy of the struct and its Header map
+func cloneRequest(r *http.Request) *http.Request {
+	// shadow copy of the struct
+	r2 := new(http.Request)
+	*r2 = *r
+
+	// deep coy of the Header
+	r2.Header = make(http.Header, len(r.Header))
+	for k, v := range r.Header {
+		r2.Header[k] = append([]string(nil), v...)
+	}
+
+	return r2
 }
