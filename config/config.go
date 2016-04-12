@@ -44,7 +44,7 @@ func ConfigDir() string {
 	return configDir
 }
 
-// Authconfig contains authorization infomation for connecting to a Registry
+// AuthConfig contains authorization infomation for connecting to a Registry
 type AuthConfig struct {
 	Username      string `json:"uername,omitempty"`
 	Password      string `json:"password,omitempty"`
