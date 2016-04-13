@@ -3,4 +3,4 @@ build:
   volumes:
   - /var/run/docker.sock:/var/run/docker.sock
   commands:
-  - make
+  - ./.dapper ci
