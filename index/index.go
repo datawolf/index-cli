@@ -40,6 +40,7 @@ type Client struct {
 	Organizations *OrganizationsService
 	Search        *SearchService
 	Status        *StatusService
+	UserInfo      *UserInfoService
 }
 
 // addOptions adds the parameters in opt as URL query  parameters to s.
@@ -79,6 +80,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Organizations = &OrganizationsService{client: c}
 	c.Search = &SearchService{client: c}
 	c.Status = &StatusService{client: c}
+	c.UserInfo = &UserInfoService{client: c}
 
 	return c
 }

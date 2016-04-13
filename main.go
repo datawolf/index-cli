@@ -59,6 +59,12 @@ func main() {
 			Action:   action.Login,
 		},
 		{
+			Name:     "userinfo",
+			Usage:    "get the user info of yourself",
+			HideHelp: true,
+			Action:   action.UserInfo,
+		},
+		{
 			Name:     "logout",
 			Usage:    "logout the hub",
 			HideHelp: true,
