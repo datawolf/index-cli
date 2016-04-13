@@ -39,6 +39,7 @@ type Client struct {
 	Repositories  *RepositoriesService
 	Organizations *OrganizationsService
 	Search        *SearchService
+	Status        *StatusService
 }
 
 // addOptions adds the parameters in opt as URL query  parameters to s.
@@ -77,6 +78,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Repositories = &RepositoriesService{client: c}
 	c.Organizations = &OrganizationsService{client: c}
 	c.Search = &SearchService{client: c}
+	c.Status = &StatusService{client: c}
 
 	return c
 }
@@ -105,7 +107,6 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 		return nil, err
 	}
 
-	req.Header.Add("Accept", "xxxx")
 	if c.UserAgent != "" {
 		req.Header.Add("User-Agent", c.UserAgent)
 	}

@@ -47,6 +47,12 @@ func main() {
 
 	app.Commands = []cli.Command{
 		{
+			Name:     "status",
+			Usage:    "get the status of the rnd-dockerhub",
+			HideHelp: true,
+			Action:   action.Status,
+		},
+		{
 			Name:     "login",
 			Usage:    "login the hub",
 			HideHelp: true,
