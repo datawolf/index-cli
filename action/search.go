@@ -2,33 +2,14 @@ package action
 
 import (
 	"fmt"
-	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
-	"strings"
 
-	"github.com/datawolf/index-cli/config"
 	"github.com/datawolf/index-cli/index"
 )
 
+// Search search docker image in rnd-dockerhub
 func Search(c *cli.Context) {
-	// Note: Search does not need to auth.
-	configFile, err := config.Load("")
-	if err != nil {
-		log.Fatal("Failed to loading the config file")
-	}
-
-	ac := configFile.AuthConfigs["rnd-dockerhub.huawei.com"]
-
-	if ac.Username == "" && ac.Password == "" {
-		log.Fatal("Please login in the hub, using command \"index-cli login\"")
-	}
-
-	tp := index.BasicAuthTransport{
-		Username: strings.TrimSpace(ac.Username),
-		Password: strings.TrimSpace(ac.Password),
-	}
-
-	client := index.NewClient(tp.Client())
+	client := index.NewClient(nil)
 	var res *index.RepositoriesSearchResult
 	for _, query := range c.Args() {
 		result, _, err := client.Search.Repositories(query, nil)
