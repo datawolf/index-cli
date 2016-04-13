@@ -24,6 +24,7 @@ const (
 	libraryVersion = "0.0.1"
 	defaultBaseURL = "http://rnd-dockerhub.huawei.com"
 	userAgent      = "rnd-dockerhub/" + libraryVersion
+	EuropaURL      = "http://rnd-dockerhub.huawei.com:9999"
 )
 
 // A Client manages communication with the rnd-dockerhub API.
@@ -41,6 +42,7 @@ type Client struct {
 	Search        *SearchService
 	Status        *StatusService
 	UserInfo      *UserInfoService
+	Users         *UsersService
 }
 
 // addOptions adds the parameters in opt as URL query  parameters to s.
@@ -81,6 +83,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Search = &SearchService{client: c}
 	c.Status = &StatusService{client: c}
 	c.UserInfo = &UserInfoService{client: c}
+	c.Users = &UsersService{client: c}
 
 	return c
 }

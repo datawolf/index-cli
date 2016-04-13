@@ -65,6 +65,20 @@ func main() {
 			Action:   action.UserInfo,
 		},
 		{
+			Name:        "repo",
+			ShortName:   "r",
+			Usage:       "get and set properties for a repository",
+			HideHelp:    true,
+			Subcommands: repoSubcommand(),
+		},
+		{
+			Name:        "user",
+			ShortName:   "u",
+			Usage:       "create and update the user",
+			HideHelp:    true,
+			Subcommands: userSubcommand(),
+		},
+		{
 			Name:     "logout",
 			Usage:    "logout the hub",
 			HideHelp: true,
@@ -85,4 +99,23 @@ func main() {
 	}
 
 	exit(app.Run(os.Args))
+}
+
+func repoSubcommand() []cli.Command {
+	return []cli.Command{}
+}
+
+func userSubcommand() []cli.Command {
+	return []cli.Command{
+		{
+			Name:   "create",
+			Usage:  "create an user",
+			Action: action.CreateUser,
+		},
+		{
+			Name:   "update",
+			Usage:  "update an user",
+			Action: action.UpdateUser,
+		},
+	}
 }
