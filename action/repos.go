@@ -93,10 +93,20 @@ func RepoSetProperty(c *cli.Context) {
 		Property: &access,
 	}
 	for _, repo := range c.Args() {
-		result, _, err := client.Repositories.Set(repo, property)
+		result, resp, err := client.Repositories.Set(repo, property)
 		if err != nil {
 			fmt.Printf("\nerror: %v\n", err)
 			os.Exit(1)
+		}
+
+		if resp.StatusCode == 401 {
+			log.Errorf("Unauthorized(Maybe not found \"%s\") in rnd-dockerhub", repo)
+			continue
+		}
+
+		if resp.StatusCode == 406 {
+			log.Errorf("StatusNotAcceptable")
+			continue
 		}
 		fmt.Printf("Set %s Access Level to %s: %s\n", repo, access, result)
 	}
