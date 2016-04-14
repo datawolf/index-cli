@@ -13,7 +13,7 @@ import (
 func UserInfo(c *cli.Context) {
 	configFile, err := config.Load("")
 	if err != nil {
-		log.Fatal("Failed to loading the config file")
+		log.WithField("error:", err).Fatal("Failed to loading the config file")
 	}
 
 	ac := configFile.AuthConfigs["rnd-dockerhub.huawei.com"]
