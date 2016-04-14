@@ -102,7 +102,24 @@ func main() {
 }
 
 func repoSubcommand() []cli.Command {
-	return []cli.Command{}
+	return []cli.Command{
+		{
+			Name:   "get",
+			Usage:  "Get Specific Repository's Property",
+			Action: action.RepoGetProperty,
+		},
+		{
+			Name:   "set",
+			Usage:  "Set Specific Repository's Property",
+			Action: action.RepoSetProperty,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "access, a",
+					Usage: "Set access level for an images(private,public,protect)",
+				},
+			},
+		},
+	}
 }
 
 func userSubcommand() []cli.Command {
