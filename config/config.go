@@ -49,16 +49,21 @@ type AuthConfig struct {
 	Username      string `json:"uername,omitempty"`
 	Password      string `json:"password,omitempty"`
 	Auth          string `json:"auth"`
-	Email         string `json:"email"`
+	Email         string `json:"email,omitempty"`
 	ServerAddress string `json:"serveraddress:,omitempty"`
+	IdentityToken string `json:"identitytoken,omitempty"`
+	RegistryToken string `json:"registrytoken,omitempty"`
 }
 
 // ConfigFile ~/.docker/config.json file info
 type ConfigFile struct {
-	AuthConfigs map[string]AuthConfig `json:"auths"`
-	HTTPHeaders map[string]string     `json:"HttpHeaders,omitempty"`
-	PsFormat    string                `json:"psFormat,omitempty"`
-	filename    string                // Note: not serialized - for internal use only
+	AuthConfigs      map[string]AuthConfig `json:"auths"`
+	HTTPHeaders      map[string]string     `json:"HttpHeaders,omitempty"`
+	PsFormat         string                `json:"psFormat,omitempty"`
+	ImagesFormat     string                `json:"imagesFormat,omitempty"`
+	DetachKeys       string                `json:"detachKeys,omitempty"`
+	CredentialsStore string                `json:"credsStore,omitempty"`
+	filename         string                // Note: not serialized - for internal use only
 }
 
 // NewConfigFile initilizes am empty configuration file for the given filename 'fn'
@@ -75,9 +80,22 @@ func (configFile *ConfigFile) LoadFromReader(configData io.Reader) error {
 		return err
 	}
 
-	var err error
+	if err := InitAESKey(); err != nil {
+		return err
+	}
+
 	for addr, ac := range configFile.AuthConfigs {
-		ac.Username, ac.Password, err = DecodeAuth(ac.Auth)
+		data, err := base64.StdEncoding.DecodeString(ac.Auth)
+		if err != nil {
+			return err
+		}
+
+		decAuth, err := AESDecrypt([]byte(data), KeyAES)
+		if err != nil {
+			return err
+		}
+
+		ac.Username, ac.Password, err = DecodeAuth(string(decAuth))
 		if err != nil {
 			return err
 		}
