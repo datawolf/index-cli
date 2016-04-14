@@ -58,7 +58,11 @@ func RepoGetProperty(c *cli.Context) {
 		fmt.Printf("Image Size         : %v\n", *res.Size)
 		fmt.Printf("Number of Images   : %d\n", *res.NumberImage)
 		fmt.Printf("Access Level       : %s\n", *res.Property)
-		fmt.Printf("Number of Download : %d\n", *res.NumberDL)
+		if res.NumberDL != nil {
+			fmt.Printf("Number of Download : %d\n", *res.NumberDL)
+		} else {
+			fmt.Printf("Number of Download : 0\n")
+		}
 		fmt.Printf("No.\tIMAGE with TAG\t\t\t\t\tSIZE\n")
 		for i, tag := range res.ImageList {
 			fmt.Printf("%d\trnd-dockerhub.huawei.com/%s:%s		\t\t%v\n", i+1, *res.RepoName, *tag.Tag, *tag.Size)
