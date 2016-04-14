@@ -16,7 +16,6 @@ import (
 	"strings"
 	"syscall"
 
-	_ "github.com/datawolf/index-cli/config"
 	"github.com/datawolf/index-cli/index"
 	"golang.org/x/crypto/ssh/terminal"
 )
