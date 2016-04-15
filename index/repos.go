@@ -8,7 +8,10 @@
 package index
 
 import (
+	"bytes"
 	"fmt"
+
+	qs "github.com/google/go-querystring/query"
 )
 
 // RepositoriesService handles communication with the repository related
@@ -74,4 +77,72 @@ func (s *RepositoriesService) Set(repo string, property *Property) (string, *Res
 	}
 
 	return "SUCCESS", resp, nil
+}
+
+type RepoDesc struct {
+	Description string `json:"description,omitempty"`
+}
+
+func (s *RepositoriesService) GetRepoDesc(repo string) (*RepoDesc, *Response, error) {
+	result := new(RepoDesc)
+	u := fmt.Sprintf("/index/repositories/%s/description", repo)
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return result, nil, err
+	}
+	resp, err := s.client.Do(req, result)
+	return result, resp, err
+}
+
+func (s *RepositoriesService) SetRepoDesc(repo string, repoDesc *RepoDesc) (string, *Response, error) {
+	u := fmt.Sprintf("/index/repositories/%s/description", repo)
+	req, err := s.client.NewRequest("PUT", u, property)
+	if err != nil {
+		return "", nil, err
+	}
+	req.Header.Add("Content-Type", "application/json")
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return "", nil, err
+	}
+
+	return "SUCCESS", resp, nil
+}
+
+func (s *RepositoriesService) DeleteRepo(repo string) (string, *Response, error) {
+	u := fmt.Sprintf("/index/repositories/%s/entirety", repo)
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return "", nil, err
+	}
+
+	buf := new(bytes.Buffer)
+	resp, err := s.client.Do(req, buf)
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), resp, nil
+}
+
+func (s *RepositoriesService) DeleteTag(repo string, tag string) (string, *Response, error) {
+	params, err := qs.Values(nil)
+	if err != nil {
+		return nil, err
+	}
+	params.Add("tag", tag)
+	u := fmt.Sprintf("/index/repositories/%s/tag?%s", repo, params.Encode())
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return "", nil, err
+	}
+
+	buf := new(bytes.Buffer)
+	resp, err := s.client.Do(req, buf)
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), resp, nil
 }
