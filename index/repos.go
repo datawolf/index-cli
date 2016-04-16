@@ -96,7 +96,7 @@ func (s *RepositoriesService) GetRepoDesc(repo string) (*RepoDesc, *Response, er
 
 func (s *RepositoriesService) SetRepoDesc(repo string, repoDesc *RepoDesc) (string, *Response, error) {
 	u := fmt.Sprintf("/index/repositories/%s/description", repo)
-	req, err := s.client.NewRequest("PUT", u, property)
+	req, err := s.client.NewRequest("PUT", u, repoDesc)
 	if err != nil {
 		return "", nil, err
 	}
@@ -120,7 +120,7 @@ func (s *RepositoriesService) DeleteRepo(repo string) (string, *Response, error)
 	buf := new(bytes.Buffer)
 	resp, err := s.client.Do(req, buf)
 	if err != nil {
-		return "", err
+		return "", resp, err
 	}
 
 	return buf.String(), resp, nil
@@ -129,7 +129,7 @@ func (s *RepositoriesService) DeleteRepo(repo string) (string, *Response, error)
 func (s *RepositoriesService) DeleteTag(repo string, tag string) (string, *Response, error) {
 	params, err := qs.Values(nil)
 	if err != nil {
-		return nil, err
+		return "", nil, err
 	}
 	params.Add("tag", tag)
 	u := fmt.Sprintf("/index/repositories/%s/tag?%s", repo, params.Encode())
@@ -141,7 +141,7 @@ func (s *RepositoriesService) DeleteTag(repo string, tag string) (string, *Respo
 	buf := new(bytes.Buffer)
 	resp, err := s.client.Do(req, buf)
 	if err != nil {
-		return "", err
+		return "", resp, err
 	}
 
 	return buf.String(), resp, nil
