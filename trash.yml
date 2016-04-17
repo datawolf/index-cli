@@ -10,3 +10,6 @@ import:
 
 - package: golang.org/x/crypto/ssh/terminal
   version: d68c3ecb62c850b645dc072a8d78006286bf81ca
+
+- package: github.com/docker/go-units
+  version: 5d2041e26a699eaca682e2ea41c8f891e1060444

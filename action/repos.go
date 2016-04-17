@@ -15,6 +15,8 @@ import (
 	"github.com/datawolf/index-cli/index"
 	"os"
 	"strings"
+
+	"github.com/docker/go-units"
 )
 
 func RepoGetProperty(c *cli.Context) {
@@ -55,7 +57,7 @@ func RepoGetProperty(c *cli.Context) {
 		res = result
 
 		fmt.Printf("Image Name         : %s\n", *res.RepoName)
-		fmt.Printf("Image Size         : %v\n", *res.Size)
+		fmt.Printf("Image Size         : %s\n", units.HumanSize(float64(*res.Size)))
 		fmt.Printf("Number of Images   : %d\n", *res.NumberImage)
 		fmt.Printf("Access Level       : %s\n", *res.Property)
 		if res.NumberDL != nil {
@@ -65,7 +67,7 @@ func RepoGetProperty(c *cli.Context) {
 		}
 		fmt.Printf("No.\tIMAGE with TAG\t\t\t\t\tSIZE\n")
 		for i, tag := range res.ImageList {
-			fmt.Printf("%d\trnd-dockerhub.huawei.com/%s:%s		\t\t%v\n", i+1, *res.RepoName, *tag.Tag, *tag.Size)
+			fmt.Printf("%d\trnd-dockerhub.huawei.com/%s:%s		\t\t%s\n", i+1, *res.RepoName, *tag.Tag, units.HumanSize(float64(*tag.Size)))
 		}
 	}
 }
