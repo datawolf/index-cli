@@ -47,29 +47,28 @@ func main() {
 
 	app.Commands = []cli.Command{
 		{
-			Name:     "status",
-			Usage:    "Get the status of the rnd-dockerhub",
-			HideHelp: true,
-			Action:   action.Status,
-		},
-		{
 			Name:     "login",
 			Usage:    "Login the hub",
 			HideHelp: true,
 			Action:   action.Login,
 		},
 		{
+			Name:     "logout",
+			Usage:    "Logout the hub",
+			HideHelp: true,
+			Action:   action.Logout,
+		},
+		{
+			Name:     "status",
+			Usage:    "Get the status of the rnd-dockerhub",
+			HideHelp: true,
+			Action:   action.Status,
+		},
+		{
 			Name:     "userinfo",
 			Usage:    "Get the user info of yourself",
 			HideHelp: true,
 			Action:   action.UserInfo,
-		},
-		{
-			Name:        "repo",
-			ShortName:   "r",
-			Usage:       "Control the Repository",
-			HideHelp:    true,
-			Subcommands: repoSubcommand(),
 		},
 		{
 			Name:        "user",
@@ -79,10 +78,11 @@ func main() {
 			Subcommands: userSubcommand(),
 		},
 		{
-			Name:     "logout",
-			Usage:    "Logout the hub",
-			HideHelp: true,
-			Action:   action.Logout,
+			Name:        "repo",
+			ShortName:   "r",
+			Usage:       "Control the Repository",
+			HideHelp:    true,
+			Subcommands: repoSubcommand(),
 		},
 		{
 			Name:     "search",
