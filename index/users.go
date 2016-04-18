@@ -27,6 +27,10 @@ type User struct {
 	Phone       *string `json:"phone,omitempty"`
 }
 
+func (u User) String() string {
+	return Stringify(u)
+}
+
 // Create create user via user's credential,
 func (s *UsersService) Create(user *User) (string, *Response, error) {
 	req, err := s.client.NewRequest("PUT", "/v1/user/create", user)
