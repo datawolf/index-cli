@@ -85,10 +85,15 @@ func RepoGetProperty(c *cli.Context) {
 }
 
 func RepoSetProperty(c *cli.Context) {
-	access := c.String("access")
-	if access == "" {
-		log.Fatal("Can not proceed without -a <access level> specified")
+	if c.NArg() != 1 {
+		log.Fatal("Only support setting one repository one time")
 	}
+
+	access := c.String("access")
+	if access != "" && access != "protect" && access != "private" && access != "public" {
+		log.Fatal("access only support one of the tree values: protect,private,public")
+	}
+	description := c.String("description")
 
 	configFile, err := config.Load("")
 	if err != nil {
@@ -107,26 +112,57 @@ func RepoSetProperty(c *cli.Context) {
 	}
 
 	client := index.NewClient(tp.Client())
-	property := &index.Property{
-		Property: &access,
-	}
+
 	for _, repo := range c.Args() {
-		result, resp, err := client.Repositories.Set(repo, property)
-		if err != nil {
-			fmt.Printf("\nerror: %v\n", err)
-			os.Exit(1)
+		if access != "" {
+			property := &index.Property{
+				Property: &access,
+			}
+			result, resp, err := client.Repositories.Set(repo, property)
+			if err != nil {
+				fmt.Printf("\nerror: %v\n", err)
+				os.Exit(1)
+			}
+
+			if resp.StatusCode == 401 {
+				log.Errorf("Unauthorized(Maybe not found \"%s\") in rnd-dockerhub", repo)
+				continue
+			}
+
+			if resp.StatusCode == 406 {
+				log.Errorf("StatusNotAcceptable")
+				continue
+			}
+			fmt.Printf("Set %s Access Level to %s: %s\n", repo, access, result)
 		}
 
-		if resp.StatusCode == 401 {
-			log.Errorf("Unauthorized(Maybe not found \"%s\") in rnd-dockerhub", repo)
-			continue
-		}
+		if description != "" {
+			desc := &index.RepoDesc{
+				Description: &description,
+			}
 
-		if resp.StatusCode == 406 {
-			log.Errorf("StatusNotAcceptable")
-			continue
+			_, resp, err := client.Repositories.SetRepoDesc(repo, desc)
+			if err != nil {
+				fmt.Printf("\nerror: %v\n", err)
+				os.Exit(1)
+			}
+
+			if resp.StatusCode == 401 {
+				log.Errorf("Unauthorized(Maybe not found \"%s\") in rnd-dockerhub", repo)
+				continue
+			}
+
+			if resp.StatusCode == 406 {
+				log.Errorf("StatusNotAcceptable")
+				continue
+			}
+
+			if resp.StatusCode == 500 {
+				log.Errorf("StatusInternalServerError")
+				continue
+			}
+			fmt.Println("Set repo's Description success")
 		}
-		fmt.Printf("Set %s Access Level to %s: %s\n", repo, access, result)
 	}
 }
 
