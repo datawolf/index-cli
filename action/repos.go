@@ -50,7 +50,12 @@ func RepoGetProperty(c *cli.Context) {
 		}
 
 		if resp.StatusCode == 401 {
-			log.Errorf("Unauthorized(Maybe not found \"%s\") in rnd-dockerhub", repo)
+			log.Errorf("Unauthorized")
+			continue
+		}
+
+		if resp.StatusCode == 404 {
+			log.Errorf("Can not found the repo: %s", repo)
 			continue
 		}
 
