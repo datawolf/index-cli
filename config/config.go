@@ -80,24 +80,37 @@ func (configFile *ConfigFile) LoadFromReader(configData io.Reader) error {
 		return err
 	}
 
-	if err := InitAESKey(); err != nil {
+	var useAES bool
+	var err error
+
+	if useAES, err = InitAESKey(); err != nil {
 		return err
 	}
 
 	for addr, ac := range configFile.AuthConfigs {
-		data, err := base64.StdEncoding.DecodeString(ac.Auth)
-		if err != nil {
-			return err
-		}
+		// Use the docker from github.com/docker
+		if useAES == false {
+			var err error
+			ac.Username, ac.Password, err = DecodeAuth(ac.Auth)
+			if err == nil {
+				return err
+			}
+		} else {
+			// Use the docker from code.huawei.com/docker
+			data, err := base64.StdEncoding.DecodeString(ac.Auth)
+			if err != nil {
+				return err
+			}
 
-		decAuth, err := AESDecrypt([]byte(data), KeyAES)
-		if err != nil {
-			return err
-		}
+			decAuth, err := AESDecrypt([]byte(data), KeyAES)
+			if err != nil {
+				return err
+			}
 
-		ac.Username, ac.Password, err = DecodeAuth(string(decAuth))
-		if err != nil {
-			return err
+			ac.Username, ac.Password, err = DecodeAuth(string(decAuth))
+			if err != nil {
+				return err
+			}
 		}
 
 		ac.Auth = ""

@@ -13,7 +13,7 @@ import (
 
 var KeyAES []byte
 
-func InitAESKey() error {
+func InitAESKey() (bool, error) {
 	home := os.Getenv("HOME")
 	if home == "" {
 		home = "~/"
@@ -21,25 +21,12 @@ func InitAESKey() error {
 	filename := filepath.Join(home, ".docker/aeskey")
 	if _, err := os.Stat(filename); err == nil {
 		if KeyAES, err = ioutil.ReadFile(filename); err != nil {
-			return err
+			return false, nil
 		}
 	} else if os.IsNotExist(err) {
-		if err := os.MkdirAll(filepath.Dir(filename), 0700); err != nil {
-			return err
-		}
-
-		// NewCipher creates and returns a new cipher.Block.
-		// The key argument should be the AES key, either 16, 24, or 32 bytes to select AES-128, AES-192, or AES-256.
-		KeyAES, err := PRNG(32)
-		if err != nil {
-			return err
-		}
-
-		if err := ioutil.WriteFile(filename, KeyAES, 0600); err != nil {
-			return err
-		}
+		return false, err
 	}
-	return nil
+	return true, nil
 }
 
 // AESEncrypt will encrypt the message with cipher feedback mode with the given key.
@@ -81,14 +68,4 @@ func AESDecrypt(ciphertext, AESKey []byte) ([]byte, error) {
 	// XORKeyStream can work in-place if the two arguments are the same.
 	stream.XORKeyStream(ciphertext, ciphertext)
 	return ciphertext, nil
-}
-
-// PRNG Pseudo Random Number Generator
-func PRNG(size int) ([]byte, error) {
-	b := make([]byte, size)
-	_, err := rand.Read(b)
-	if err != nil {
-		return nil, err
-	}
-	return b, nil
 }
