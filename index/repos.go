@@ -80,7 +80,7 @@ func (s *RepositoriesService) Set(repo string, property *Property) (string, *Res
 }
 
 type RepoDesc struct {
-	Description string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty"`
 }
 
 func (s *RepositoriesService) GetRepoDesc(repo string) (*RepoDesc, *Response, error) {

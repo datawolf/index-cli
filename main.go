@@ -117,6 +117,10 @@ func repoSubcommand() []cli.Command {
 					Name:  "access, a",
 					Usage: "Set access level for an images(private,public,protect)",
 				},
+				cli.StringFlag{
+					Name:  "description, d",
+					Usage: "Set description an images",
+				},
 			},
 		},
 		{

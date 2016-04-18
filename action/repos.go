@@ -40,6 +40,7 @@ func RepoGetProperty(c *cli.Context) {
 	client := index.NewClient(tp.Client())
 
 	var res *index.Property
+	var desc *index.RepoDesc
 	w := new(tabwriter.Writer)
 	w.Init(os.Stdout, 0, 8, 0, '\t', 0)
 	for _, repo := range c.Args() {
@@ -59,9 +60,15 @@ func RepoGetProperty(c *cli.Context) {
 		}
 		res = result
 
+		description, _, err := client.Repositories.GetRepoDesc(repo)
+		desc = description
+
 		fmt.Printf("Image Name         : %s\n", *res.RepoName)
 		fmt.Printf("Image Size         : %s\n", units.HumanSize(float64(*res.Size)))
 		fmt.Printf("Number of Images   : %d\n", *res.NumberImage)
+		if desc.Description != nil {
+			fmt.Printf("Descripton         : %s\n", *desc.Description)
+		}
 		fmt.Printf("Access Level       : %s\n", *res.Property)
 		if res.NumberDL != nil {
 			fmt.Printf("Number of Download : %d\n", *res.NumberDL)
