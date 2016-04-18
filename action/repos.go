@@ -121,3 +121,95 @@ func RepoSetProperty(c *cli.Context) {
 		fmt.Printf("Set %s Access Level to %s: %s\n", repo, access, result)
 	}
 }
+
+func RepoDeleteTag(c *cli.Context) {
+	configFile, err := config.Load("")
+	if err != nil {
+		log.Fatal("Failed to loading the config file")
+	}
+
+	ac := configFile.AuthConfigs["rnd-dockerhub.huawei.com"]
+
+	if ac.Username == "" && ac.Password == "" {
+		log.Fatal("Please login in the hub, using command \"index-cli login\"")
+	}
+
+	tp := index.BasicAuthTransport{
+		Username: strings.TrimSpace(ac.Username),
+		Password: strings.TrimSpace(ac.Password),
+	}
+
+	client := index.NewClient(tp.Client())
+
+	for _, repoWithTag := range c.Args() {
+		arr := strings.SplitN(repoWithTag, ":", 2)
+		if len(arr) != 2 {
+			fmt.Printf("\nError: The args should be like \"images:tag\"\n")
+			continue
+		}
+
+		repo, tag := arr[0], arr[1]
+		_, resp, err := client.Repositories.DeleteTag(repo, tag)
+		if err != nil {
+			fmt.Printf("\nError: %v\n", err)
+			os.Exit(1)
+		}
+
+		if resp.StatusCode == 401 {
+			log.Errorf("Unauthorized")
+			continue
+		}
+
+		if resp.StatusCode == 404 {
+			log.Errorf("The image(%s) with tag(%s) does not exist\n", repo, tag)
+			continue
+		}
+
+		if resp.StatusCode == 406 {
+			log.Errorf("StatusNotAcceptable")
+			continue
+		}
+
+		fmt.Printf("Delete image(%s) with tha tag(%s) success.\n", repo, tag)
+	}
+}
+
+func RepoDelete(c *cli.Context) {
+	configFile, err := config.Load("")
+	if err != nil {
+		log.Fatal("Failed to loading the config file")
+	}
+
+	ac := configFile.AuthConfigs["rnd-dockerhub.huawei.com"]
+
+	if ac.Username == "" && ac.Password == "" {
+		log.Fatal("Please login in the hub, using command \"index-cli login\"")
+	}
+
+	tp := index.BasicAuthTransport{
+		Username: strings.TrimSpace(ac.Username),
+		Password: strings.TrimSpace(ac.Password),
+	}
+
+	client := index.NewClient(tp.Client())
+
+	for _, repo := range c.Args() {
+		_, resp, err := client.Repositories.DeleteRepo(repo)
+		if err != nil {
+			fmt.Printf("\nError: %v\n", err)
+			os.Exit(1)
+		}
+
+		if resp.StatusCode == 401 {
+			log.Errorf("Unauthorized")
+			continue
+		}
+
+		if resp.StatusCode == 406 {
+			log.Errorf("StatusNotAcceptable")
+			continue
+		}
+
+		fmt.Printf("Delete repo(%s) success.\n", repo)
+	}
+}

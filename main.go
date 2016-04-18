@@ -48,45 +48,45 @@ func main() {
 	app.Commands = []cli.Command{
 		{
 			Name:     "status",
-			Usage:    "get the status of the rnd-dockerhub",
+			Usage:    "Get the status of the rnd-dockerhub",
 			HideHelp: true,
 			Action:   action.Status,
 		},
 		{
 			Name:     "login",
-			Usage:    "login the hub",
+			Usage:    "Login the hub",
 			HideHelp: true,
 			Action:   action.Login,
 		},
 		{
 			Name:     "userinfo",
-			Usage:    "get the user info of yourself",
+			Usage:    "Get the user info of yourself",
 			HideHelp: true,
 			Action:   action.UserInfo,
 		},
 		{
 			Name:        "repo",
 			ShortName:   "r",
-			Usage:       "get and set properties for a repository",
+			Usage:       "Control the Repository",
 			HideHelp:    true,
 			Subcommands: repoSubcommand(),
 		},
 		{
 			Name:        "user",
 			ShortName:   "u",
-			Usage:       "create and update the user",
+			Usage:       "Control user",
 			HideHelp:    true,
 			Subcommands: userSubcommand(),
 		},
 		{
 			Name:     "logout",
-			Usage:    "logout the hub",
+			Usage:    "Logout the hub",
 			HideHelp: true,
 			Action:   action.Logout,
 		},
 		{
 			Name:     "search",
-			Usage:    "search rnd-dockerhub for images",
+			Usage:    "Search rnd-dockerhub for images",
 			HideHelp: true,
 			Action:   action.Search,
 			Flags: []cli.Flag{
@@ -118,6 +118,16 @@ func repoSubcommand() []cli.Command {
 					Usage: "Set access level for an images(private,public,protect)",
 				},
 			},
+		},
+		{
+			Name:   "del",
+			Usage:  "Delete Specific Repository",
+			Action: action.RepoDelete,
+		},
+		{
+			Name:   "rmi",
+			Usage:  "Delete Repository With Specific tag",
+			Action: action.RepoDeleteTag,
 		},
 	}
 }
