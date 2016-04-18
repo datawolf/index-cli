@@ -20,12 +20,14 @@ type UsersService struct {
 }
 
 type User struct {
-	Username *string `json:"name,omitempty"`
-	Password *string `json:"pwd,omitempty"`
-	Email    *string `json:"email,omitempty"`
-	Phone    *string `json:"phone,omitempty"`
+	Username    *string `json:"name,omitempty"`
+	Password    *string `json:"pwd,omitempty"`
+	NewPassword *string `json:"pwdnew,omitempty"`
+	Email       *string `json:"email,omitempty"`
+	Phone       *string `json:"phone,omitempty"`
 }
 
+// Create create user via user's credential,
 func (s *UsersService) Create(user *User) (string, *Response, error) {
 	req, err := s.client.NewRequest("PUT", "/v1/user/create", user)
 	if err != nil {
@@ -39,4 +41,21 @@ func (s *UsersService) Create(user *User) (string, *Response, error) {
 		return "", nil, err
 	}
 	return buf.String(), resp, nil
+}
+
+// Update update user via user's credential,
+func (s *UsersService) Update(user *User) (string, *Response, error) {
+	req, err := s.client.NewRequest("PATCH", "/v1/user/update", user)
+	if err != nil {
+		return "", nil, err
+	}
+	req.Header.Add("Content-Type", "application/json")
+
+	buf := new(bytes.Buffer)
+	resp, err := s.client.Do(req, buf)
+	if err != nil {
+		return "", nil, err
+	}
+	return buf.String(), resp, nil
+
 }

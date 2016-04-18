@@ -9,14 +9,15 @@ package action
 
 import (
 	"fmt"
+	"os"
+	"strings"
+	"text/tabwriter"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/datawolf/index-cli/config"
 	"github.com/datawolf/index-cli/index"
 	"github.com/docker/go-units"
-	"os"
-	"strings"
-	"text/tabwriter"
 )
 
 func RepoGetProperty(c *cli.Context) {
