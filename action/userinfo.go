@@ -35,11 +35,11 @@ func UserInfo(c *cli.Context) {
 		return
 	}
 	res = result
-	fmt.Printf("User Name : %v\n", *res.Username)
-	fmt.Printf("Namespace : %v\n", *res.Namespace)
-	fmt.Printf("Product   : %v\n", *res.Product)
-	fmt.Printf("Quote     : %v\n", units.HumanSize(float64(*res.Quote)))
-	fmt.Printf("Used Space: %v\n", units.HumanSize(float64(*res.UsedSpace)))
+	fmt.Printf("User Name  : %v\n", *res.Username)
+	fmt.Printf("Namespace  : %v\n", *res.Namespace)
+	fmt.Printf("Product    : %v\n", *res.Product)
+	fmt.Printf("Quote      : %v\n", units.HumanSize(float64(*res.Quote)))
+	fmt.Printf("Used Space : %v\n", units.HumanSize(float64(*res.UsedSpace)))
 	fmt.Printf("Number Of Image         : %v\n", *res.NumberImage)
 	fmt.Printf("Number of Image(private): %v\n", *res.NumberImagePrivate)
 	fmt.Printf("Number of Image(protect): %v\n", *res.NumberImageProtect)

@@ -13,10 +13,10 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/datawolf/index-cli/config"
 	"github.com/datawolf/index-cli/index"
+	"github.com/docker/go-units"
 	"os"
 	"strings"
-
-	"github.com/docker/go-units"
+	"text/tabwriter"
 )
 
 func RepoGetProperty(c *cli.Context) {
@@ -39,6 +39,8 @@ func RepoGetProperty(c *cli.Context) {
 	client := index.NewClient(tp.Client())
 
 	var res *index.Property
+	w := new(tabwriter.Writer)
+	w.Init(os.Stdout, 0, 8, 0, '\t', 0)
 	for _, repo := range c.Args() {
 		result, resp, err := client.Repositories.Get(repo)
 		if err != nil {
@@ -65,10 +67,12 @@ func RepoGetProperty(c *cli.Context) {
 		} else {
 			fmt.Printf("Number of Download : 0\n")
 		}
-		fmt.Printf("No.\tIMAGE with TAG\t\t\t\t\tSIZE\n")
+		fmt.Fprintln(w, "NUM\tNAME:TAG\tSIZE")
 		for i, tag := range res.ImageList {
-			fmt.Printf("%d\trnd-dockerhub.huawei.com/%s:%s		\t\t%s\n", i+1, *res.RepoName, *tag.Tag, units.HumanSize(float64(*tag.Size)))
+			fmt.Fprintf(w, "%d\trnd-dockerhub.huawei.com/%s:%s\t%s\n", i+1, *res.RepoName, *tag.Tag, units.HumanSize(float64(*tag.Size)))
 		}
+
+		w.Flush()
 	}
 }
 
