@@ -91,6 +91,7 @@ func UpdateUser(c *cli.Context) {
 	username := strings.TrimSpace(ac.Username)
 	password := strings.TrimSpace(ac.Password)
 
+	fmt.Printf("Username: %s\n", username)
 	// Get the new password
 	r := bufio.NewReader(os.Stdin)
 	fmt.Print("Please input NEW PASSWORD: ")
@@ -127,7 +128,11 @@ func UpdateUser(c *cli.Context) {
 		Phone:       &phone,
 	}
 
-	client := index.NewClient(nil)
+	tp := index.BasicAuthTransport{
+		Username: strings.TrimSpace(ac.Username),
+		Password: strings.TrimSpace(ac.Password),
+	}
+	client := index.NewClient(tp.Client())
 	rel, err := url.Parse(index.EuropaURL)
 
 	if err != nil {
