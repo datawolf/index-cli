@@ -28,7 +28,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = os.Args[0]
 	app.Version = Version
-	app.Usage = "The cli tool to access the index and hub."
+	app.Usage = "The cli tool that access rnd-dockerhub.huawei.com."
 	app.Before = beforeApp
 	app.EnableBashCompletion = true
 	app.Authors = []cli.Author{
