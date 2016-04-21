@@ -146,3 +146,33 @@ func (s *RepositoriesService) DeleteTag(repo string, tag string) (string, *Respo
 
 	return buf.String(), resp, nil
 }
+
+type UserRepo struct {
+	NumberDL    *int    `json:"download_num,omitempty"`
+	NumberImage *int    `json:"image_num,omitempty"`
+	Property    *string `json:"property,omitempty"`
+	RepoName    *string `json:"repo,omitempty"`
+	Size        *int    `json:"size,omitempty"`
+}
+
+type UserRepoResult struct {
+	RepoList []UserRepo `json:"repo_list,omitempty"`
+}
+
+func (u UserRepoResult) String() string {
+	return Stringify(u)
+}
+
+func (u UserRepo) String() string {
+	return Stringify(u)
+}
+
+func (s *RepositoriesService) GetUserRepo() (*UserRepoResult, *Response, error) {
+	result := new(UserRepoResult)
+	req, err := s.client.NewRequest("GET", "index/userrepo", nil)
+	if err != nil {
+		return result, nil, err
+	}
+	resp, err := s.client.Do(req, result)
+	return result, resp, err
+}

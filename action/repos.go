@@ -20,6 +20,57 @@ import (
 	"github.com/docker/go-units"
 )
 
+func RepoList(c *cli.Context) {
+	if c.NArg() != 0 {
+		log.Fatalf("invaild argument:%v", c.Args())
+	}
+
+	configFile, err := config.Load("")
+	if err != nil {
+		log.Fatal("Failed to loading the config file")
+	}
+
+	ac := configFile.AuthConfigs["rnd-dockerhub.huawei.com"]
+
+	if ac.Username == "" && ac.Password == "" {
+		log.Fatal("Please login in the hub, using command \"index-cli login\"")
+	}
+
+	tp := index.BasicAuthTransport{
+		Username: strings.TrimSpace(ac.Username),
+		Password: strings.TrimSpace(ac.Password),
+	}
+
+	client := index.NewClient(tp.Client())
+
+	var res *index.UserRepoResult
+	w := new(tabwriter.Writer)
+	w.Init(os.Stdout, 0, 8, 0, '\t', 0)
+	result, resp, err := client.Repositories.GetUserRepo()
+	if err != nil {
+		log.Error(err)
+	}
+
+	if resp.StatusCode == 401 {
+		log.Errorf("Unauthorized")
+	}
+
+	if resp.StatusCode == 404 {
+		log.Errorf("StatusNotFound")
+	}
+
+	if resp.StatusCode == 406 {
+		log.Errorf("StatusNotAcceptable")
+	}
+	fmt.Fprintln(w, "NUM\tNAME\tACCESS")
+	res = result
+
+	for i, repo := range res.RepoList {
+		fmt.Fprintf(w, "%d\trnd-dockerhub.huawei.com/%s\t%s\n", i+1, *repo.RepoName, *repo.Property)
+	}
+	w.Flush()
+}
+
 func RepoGetProperty(c *cli.Context) {
 	configFile, err := config.Load("")
 	if err != nil {

@@ -104,6 +104,11 @@ func main() {
 func repoSubcommand() []cli.Command {
 	return []cli.Command{
 		{
+			Name:   "list",
+			Usage:  "List Specific Account's Repository",
+			Action: action.RepoList,
+		},
+		{
 			Name:   "get",
 			Usage:  "Get Specific Repository's Property",
 			Action: action.RepoGetProperty,

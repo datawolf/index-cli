@@ -118,6 +118,23 @@ A cli tool that access rnd-dockerhub.huawei.com.
 	rnd-dockerhub.huawei.com/unicorn/unicorn_ubuntu					0	false
 	rnd-dockerhub.huawei.com/unicorn/ubuntu							0	false
 
+### 查看当前登录用户的所有镜像信息
+
+	$ ./bin/index-cli repo list
+	NUM	NAME											ACCESS
+	1	rnd-dockerhub.huawei.com/unicorn/os-rootfs		public
+	2	rnd-dockerhub.huawei.com/unicorn/os-base		public
+	3	rnd-dockerhub.huawei.com/unicorn/os-acpid		public
+	4	rnd-dockerhub.huawei.com/unicorn/os-autoformat  public
+	5	rnd-dockerhub.huawei.com/unicorn/os-cloudinit   public
+	6	rnd-dockerhub.huawei.com/unicorn/os-console		public
+	7	rnd-dockerhub.huawei.com/unicorn/os-docker		public
+	8	rnd-dockerhub.huawei.com/unicorn/os-headers		public
+	9	rnd-dockerhub.huawei.com/unicorn/os-network		public
+	10	rnd-dockerhub.huawei.com/unicorn/os-ntp			public
+    ....
+	....
+
 ### 获取`rnd-dockerhub.huawei.com/official/ubuntu`镜像的详细信息
 
 > **注意：** 不需要输入域名`rnd-dockerhub.huawei.com`
